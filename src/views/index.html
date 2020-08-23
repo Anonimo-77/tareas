@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <script src="/font-awesome.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        #table2 {
+            border: 1px solid black;
+        }
+        #table2 td {
+            border: 1px solid black;
+            text-align: center;
+        }
+        #table2 th {
+            border: 1px solid black;
+            text-align: center;
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Tarea</th>
+                <th scope="col">Descripción</th>
+                <th scope="col">Materia</th>
+                <th scope="col">Hecha</th>
+                <th scope="col">Enviada</th>
+                <th scope="col">Fecha</th>
+                <th scope="col">Faltan</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <form class="form-inline" method="POST">
+        <input type="text" name="name" class="form-control  mr-sm-2" placeholder="Tarea">
+        <textarea name="description" class="form-control" placeholder="Descripción" style="height: 38px;"></textarea>
+        <select name="subject" id="subject" class="form-control  mr-sm-2 ml-2">
+            
+        </select>
+        <input type="date" name="date" class="form-control">
+        <button type="submit" class="btn btn-primary ml-2">Insertar</button>
+    </form>
+    <br>
+    <br>
+    <table id="table2">
+        <thead>
+            <tr>
+                <th scope="col">Materia</th>
+                <th scope="col">Nº tareas</th>
+                <th scope="col">Nº tareas hechas</th>
+                <th scope="col">Nº tareas no hechas</th>
+                <th scope="col">Nº tareas atrasadas</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <script>
+        console.log(user);
+        const socket = io();
+        var tasks;
+        var year;
+        document.getElementsByTagName('form')[0].innerHTML += `<input type="hidden" name="user" value="${user}">`;
+        socket.emit('getYear', user);
+        socket.on('rgetYear', (yearr) => {
+            year = Number(yearr);
+            console.log(year);
+            if (year == 1) {
+                document.getElementById('subject').innerHTML = `
+            <option value="Coro">Coro</option>
+            <option value="Idioma">Idioma</option>
+            <option value="Música">Música</option>
+            <option value="Matemática">Matemática</option>
+            <option value="Lengua">Lengua</option>
+            <option value="Historia">Historia</option>
+            <option value="Geografía">Geografía</option>
+            <option value="Educación Física">Educación Física</option>
+            <option value="Ciencias Naturales">Ciencias Naturales</option>
+            <option value="Acción Solidaria">Acción Solidaria</option>
+            <option value="Informática">Informática</option>
+            <option value="Plástica">Plástica</option>
+            <option value="DOE">DOE</option>
+            <option value="Taller de Aprendizaje">Taller de Aprendizaje</option>
+            `;
+            let ttidioma = tasks.filter((val) => {
+                return (val.subject == "Idioma" && val.user == user);
+            }).length;
+            let ttcoro = tasks.filter((val) => {
+                return (val.subject == "Coro" && val.user == user);
+            }).length;
+            let ttmusica = tasks.filter((val) => {
+                return (val.subject == "Música" && val.user == user);
+            }).length;
+            let ttmatematica = tasks.filter((val) => {
+                return (val.subject == "Matemática" && val.user == user);
+            }).length;
+            let ttlengua = tasks.filter((val) => {
+                return (val.subject == "Lengua" && val.user == user);
+            }).length;
+            let tthistoria = tasks.filter((val) => {
+                return (val.subject == "Historia" && val.user == user);
+            }).length;
+            let ttgeografia = tasks.filter((val) => {
+                return (val.subject == "Geografía" && val.user == user);
+            }).length;
+            let ttedfis = tasks.filter((val) => {
+                return (val.subject == "Educación Física" && val.user == user);
+            }).length;
+            let ttcnat = tasks.filter((val) => {
+                return (val.subject == "Ciencias Naturales" && val.user == user);
+            }).length;
+            let ttaccion = tasks.filter((val) => {
+                return (val.subject == "Acción Solidaria" && val.user == user);
+            }).length;
+            let ttinformatica = tasks.filter((val) => {
+                return (val.subject == "Informática" && val.user == user);
+            }).length;
+            let ttplastica = tasks.filter((val) => {
+                return (val.subject == "Plástica" && val.user == user);
+            }).length;
+            let ttdoe = tasks.filter((val) => {
+                return (val.subject == "DOE" && val.user == user);
+            }).length;
+
+
+            let thidioma = tasks.filter((val) => {
+                return (val.subject == "Idioma" && val.user == user && val.done == true);
+            }).length;
+            let thcoro = tasks.filter((val) => {
+                return (val.subject == "Coro" && val.user == user && val.done == true);
+            }).length;
+            let thmusica = tasks.filter((val) => {
+                return (val.subject == "Música" && val.user == user && val.done == true);
+            }).length;
+            let thmatematica = tasks.filter((val) => {
+                return (val.subject == "Matemática" && val.user == user && val.done == true);
+            }).length;
+            let thlengua = tasks.filter((val) => {
+                return (val.subject == "Lengua" && val.user == user && val.done == true);
+            }).length;
+            let thhistoria = tasks.filter((val) => {
+                return (val.subject == "Historia" && val.user == user && val.done == true);
+            }).length;
+            let thgeografia = tasks.filter((val) => {
+                return (val.subject == "Geografía" && val.user == user && val.done == true);
+            }).length;
+            let thedfis = tasks.filter((val) => {
+                return (val.subject == "Educación Física" && val.user == user && val.done == true);
+            }).length;
+            let thcnat = tasks.filter((val) => {
+                return (val.subject == "Biología" && val.user == user && val.done == true);
+            }).length;
+            let thaccion = tasks.filter((val) => {
+                return (val.subject == "Acción Solidaria" && val.user == user && val.done == true);
+            }).length;
+            let thinformatica = tasks.filter((val) => {
+                return (val.subject == "Informática" && val.user == user && val.done == true);
+            }).length;
+            let thplastica = tasks.filter((val) => {
+                return (val.subject == "Plástica" && val.user == user && val.done == true);
+            }).length;
+            let thdoe = tasks.filter((val) => {
+                return (val.subject == "DOE" && val.user == user && val.done == true);
+            }).length;
+
+            let tnhidioma = tasks.filter((val) => {
+                return (val.subject == "Idioma" && val.user == user && val.done == false);
+            }).length;
+            let tnhcoro = tasks.filter((val) => {
+                return (val.subject == "Coro" && val.user == user && val.done == false);
+            }).length;
+            let tnhmusica = tasks.filter((val) => {
+                return (val.subject == "Música" && val.user == user && val.done == false);
+            }).length;
+            let tnhmatematica = tasks.filter((val) => {
+                return (val.subject == "Matemática" && val.user == user && val.done == false);
+            }).length;
+            let tnhlengua = tasks.filter((val) => {
+                return (val.subject == "Lengua" && val.user == user && val.done == false);
+            }).length;
+            let tnhhistoria = tasks.filter((val) => {
+                return (val.subject == "Historia" && val.user == user && val.done == false);
+            }).length;
+            let tnhgeografia = tasks.filter((val) => {
+                return (val.subject == "Geografía" && val.user == user && val.done == false);
+            }).length;
+            let tnhedfis = tasks.filter((val) => {
+                return (val.subject == "Educación Física" && val.user == user && val.done == false);
+            }).length;
+            let tnhcnat = tasks.filter((val) => {
+                return (val.subject == "Ciencias Naturales" && val.user == user && val.done == false);
+            }).length;
+            let tnhaccion = tasks.filter((val) => {
+                return (val.subject == "Acción Solidaria" && val.user == user && val.done == false);
+            }).length;
+            let tnhinformatica = tasks.filter((val) => {
+                return (val.subject == "Informática" && val.user == user && val.done == false);
+            }).length;
+            let tnhplastica = tasks.filter((val) => {
+                return (val.subject == "Plástica" && val.user == user && val.done == false);
+            }).length;
+            let tnhdoe = tasks.filter((val) => {
+                return (val.subject == "DOE" && val.user == user && val.done == false);
+            }).length;
+
+            let taidioma = tasks.filter((val) => {
+                return (val.subject == "Idioma" && val.user == user && (new Date())-Date.parse(val.date) > 0 && val.done == false);
+            }).length;
+            let tacoro = tasks.filter((val) => {
+                return (val.subject == "Coro" && val.user == user && (new Date())-Date.parse(val.date) > 0 && val.done == false);
+            }).length;
+            let tamusica = tasks.filter((val) => {
+                return (val.subject == "Música" && val.user == user && (new Date())-Date.parse(val.date) > 0 && val.done == false);
+            }).length;
+            let tamatematica = tasks.filter((val) => {
+                return (val.subject == "Matemática" && val.user == user && (new Date())-Date.parse(val.date) > 0 && val.done == false);
+            }).length;
+            let talengua = tasks.filter((val) => {
+                return (val.subject == "Lengua" && val.user == user && (new Date())-Date.parse(val.date) > 0 && val.done == false);
+            }).length;
+            let tahistoria = tasks.filter((val) => {
+                return (val.subject == "Historia" && val.user == user && (new Date())-Date.parse(val.date) > 0 && val.done == false);
+            }).length;
+            let tageografia = tasks.filter((val) => {
+                return (val.subject == "Geografía" && val.user == user && (new Date())-Date.parse(val.date) > 0 && val.done == false);
+            }).length;
+            let taedfis = tasks.filter((val) => {
+                return (val.subject == "Educación Física" && val.user == user && (new Date())-Date.parse(val.date) > 0 && val.done == false);
+            }).length;
+            let tacnat = tasks.filter((val) => {
+                return (val.subject == "Ciencias Naturales" && val.user == user && (new Date())-Date.parse(val.date) > 0 && val.done == false);
+            }).length;
+            let taaccion = tasks.filter((val) => {
+                return (val.subject == "Acción Solidaria" && val.user == user && (new Date())-Date.parse(val.date) > 0 && val.done == false);
+            }).length;
+            let tainformatica = tasks.filter((val) => {
+                return (val.subject == "Informática" && val.user == user && (new Date())-Date.parse(val.date) > 0 && val.done == false);
+            }).length;
+            let taplastica = tasks.filter((val) => {
+                return (val.subject == "Plástica" && val.user == user && (new Date())-Date.parse(val.date) > 0 && val.done == false);
+            }).length;
+            let tadoe = tasks.filter((val) => {
+                return (val.subject == "DOE" && val.user == user && (new Date())-Date.parse(val.date) > 0 && val.done == false);
+            }).length;
+            
+
+            
+
+            
+            document.getElementsByTagName('tbody')[1].innerHTML = `
+                <tr>
+                    <th>Idioma</th>
+                    <td>${ttidioma}</td>
+                    <td>${thidioma}</td>
+                    <td>${tnhidioma}</td>
+                    <td>${taidioma}</td>
+                </tr>
+                <tr>
+                    <th>Coro</th>
+                    <td>${ttcoro}</td>
+                    <td>${thcoro}</td>
+                    <td>${tnhcoro}</td>
+                    <td>${tacoro}</td>
+                </tr>
+                <tr>
+                    <th>Música</th>
+                    <td>${ttmusica}</td>
+                    <td>${thmusica}</td>
+                    <td>${tnhmusica}</td>
+                    <td>${tamusica}</td>
+                </tr>
+                <tr>
+                    <th>Matemática</th>
+                    <td>${ttmatematica}</td>
+                    <td>${thmatematica}</td>
+                    <td>${tnhmatematica}</td>
+                    <td>${tamatematica}</td>
+                </tr>
+                <tr>
+                    <th>Lengua</th>
+                    <td>${ttlengua}</td>
+                    <td>${thlengua}</td>
+                    <td>${tnhlengua}</td>
+                    <td>${talengua}</td>
+                </tr>
+                <tr>
+                    <th>Historia</th>
+                    <td>${tthistoria}</td>
+                    <td>${thhistoria}</td>
+                    <td>${tnhhistoria}</td>
+                    <td>${tahistoria}</td>
+                </tr>
+                <tr>
+                    <th>Geografía</th>
+                    <td>${ttgeografia}</td>
+                    <td>${thgeografia}</td>
+                    <td>${tnhgeografia}</td>
+                    <td>${tageografia}</td>
+                </tr>
+                <tr>
+                    <th>Educación Física</th>
+                    <td>${ttedfis}</td>
+                    <td>${thedfis}</td>
+                    <td>${tnhedfis}</td>
+                    <td>${taedfis}</td>
+                </tr>
+                <tr>
+                    <th>Ciencias Naturales</th>
+                    <td>${ttcnat}</td>
+                    <td>${thcnat}</td>
+                    <td>${tnhcnat}</td>
+                    <td>${tacnat}</td>
+                </tr>
+                <tr>
+                    <th>Acción Solidaria</th>
+                    <td>${ttaccion}</td>
+                    <td>${thaccion}</td>
+                    <td>${tnhaccion}</td>
+                    <td>${taaccion}</td>
+                </tr>
+                <tr>
+                    <th>Informática</th>
+                    <td>${ttinformatica}</td>
+                    <td>${thinformatica}</td>
+                    <td>${tnhinformatica}</td>
+                    <td>${tainformatica}</td>
+                </tr>
+                <tr>
+                    <th>Plástica</th>
+                    <td>${ttplastica}</td>
+                    <td>${thplastica}</td>
+                    <td>${tnhplastica}</td>
+                    <td>${taplastica}</td>
+                </tr>
+            `;
+            }
+            else if (year == 2) {
+            document.getElementById('subject').innerHTML = `
+            <option value="Idioma">Idioma</option>
+            <option value="Química">Química</option>
+            <option value="Arte">Arte (Música/Plástica)</option>
+            <option value="Matemática">Matemática</option>
+            <option value="Lengua">Lengua</option>
+            <option value="Historia">Historia</option>
+            <option value="Geografía">Geografía</option>
+            <option value="FEC">FEC</option>
+            <option value="Educación Física">Educación Física</option>
+            <option value="Biología">Biología</option>
+            <option value="Acción Solidaria">Acción Solidaria</option>
+            <option value="Informática">Informática</option>
+            <option value="DOE">DOE</option>
+            `;
+            let ttidioma = tasks.filter((val) => {
+                return (val.subject == "Idioma" && val.user == user);
+            }).length;
+            let ttquimica = tasks.filter((val) => {
+                return (val.subject == "Química" && val.user == user);
+            }).length;
+            let ttarte = tasks.filter((val) => {
+                return (val.subject == "Arte" && val.user == user);
+            }).length;
+            let ttmatematica = tasks.filter((val) => {
+                return (val.subject == "Matemática" && val.user == user);
+            }).length;
+            let ttlengua = tasks.filter((val) => {
+                return (val.subject == "Lengua" && val.user == user);
+            }).length;
+            let tthistoria = tasks.filter((val) => {
+                return (val.subject == "Historia" && val.user == user);
+            }).length;
+            let ttgeografia = tasks.filter((val) => {
+                return (val.subject == "Geografía" && val.user == user);
+            }).length;
+            let ttfec = tasks.filter((val) => {
+                return (val.subject == "FEC" && val.user == user);
+            }).length;
+            let ttedfis = tasks.filter((val) => {
+                return (val.subject == "Educación Física" && val.user == user);
+            }).length;
+            let ttbio = tasks.filter((val) => {
+                return (val.subject == "Biología" && val.user == user);
+            }).length;
+            let ttaccion = tasks.filter((val) => {
+                return (val.subject == "Acción Solidaria" && val.user == user);
+            }).length;
+            let ttinformatica = tasks.filter((val) => {
+                return (val.subject == "Informática" && val.user == user);
+            }).length;
+            let ttdoe = tasks.filter((val) => {
+                return (val.subject == "Doe" && val.user == user);
+            }).length;
+
+
+            let thidioma = tasks.filter((val) => {
+                return (val.subject == "Idioma" && val.user == user && val.done == true);
+            }).length;
+            let thquimica = tasks.filter((val) => {
+                return (val.subject == "Química" && val.user == user && val.done == true);
+            }).length;
+            let tharte = tasks.filter((val) => {
+                return (val.subject == "Arte" && val.user == user && val.done == true);
+            }).length;
+            let thmatematica = tasks.filter((val) => {
+                return (val.subject == "Matemática" && val.user == user && val.done == true);
+            }).length;
+            let thlengua = tasks.filter((val) => {
+                return (val.subject == "Lengua" && val.user == user && val.done == true);
+            }).length;
+            let thhistoria = tasks.filter((val) => {
+                return (val.subject == "Historia" && val.user == user && val.done == true);
+            }).length;
+            let thgeografia = tasks.filter((val) => {
+                return (val.subject == "Geografía" && val.user == user && val.done == true);
+            }).length;
+            let thfec = tasks.filter((val) => {
+                return (val.subject == "FEC" && val.user == user && val.done == true);
+            }).length;
+            let thedfis = tasks.filter((val) => {
+                return (val.subject == "Educación Física" && val.user == user && val.done == true);
+            }).length;
+            let thbio = tasks.filter((val) => {
+                return (val.subject == "Biología" && val.user == user && val.done == true);
+            }).length;
+            let thaccion = tasks.filter((val) => {
+                return (val.subject == "Acción Solidaria" && val.user == user && val.done == true);
+            }).length;
+            let thinformatica = tasks.filter((val) => {
+                return (val.subject == "Informática" && val.user == user && val.done == true);
+            }).length;
+            let thdoe = tasks.filter((val) => {
+                return (val.subject == "DOE" && val.user == user && val.done == true);
+            }).length;
+
+            let tnhidioma = tasks.filter((val) => {
+                return (val.subject == "Idioma" && val.user == user && val.done == false);
+            }).length;
+            let tnhquimica = tasks.filter((val) => {
+                return (val.subject == "Química" && val.user == user && val.done == false);
+            }).length;
+            let tnharte = tasks.filter((val) => {
+                return (val.subject == "Arte" && val.user == user && val.done == false);
+            }).length;
+            let tnhmatematica = tasks.filter((val) => {
+                return (val.subject == "Matemática" && val.user == user && val.done == false);
+            }).length;
+            let tnhlengua = tasks.filter((val) => {
+                return (val.subject == "Lengua" && val.user == user && val.done == false);
+            }).length;
+            let tnhhistoria = tasks.filter((val) => {
+                return (val.subject == "Historia" && val.user == user && val.done == false);
+            }).length;
+            let tnhgeografia = tasks.filter((val) => {
+                return (val.subject == "Geografía" && val.user == user && val.done == false);
+            }).length;
+            let tnhfec = tasks.filter((val) => {
+                return (val.subject == "FEC" && val.user == user && val.done == false);
+            }).length;
+            let tnhedfis = tasks.filter((val) => {
+                return (val.subject == "Educación Física" && val.user == user && val.done == false);
+            }).length;
+            let tnhbio = tasks.filter((val) => {
+                return (val.subject == "Biología" && val.user == user && val.done == false);
+            }).length;
+            let tnhaccion = tasks.filter((val) => {
+                return (val.subject == "Acción Solidaria" && val.user == user && val.done == false);
+            }).length;
+            let tnhinformatica = tasks.filter((val) => {
+                return (val.subject == "Informática" && val.user == user && val.done == false);
+            }).length;
+            let tnhdoe = tasks.filter((val) => {
+                return (val.subject == "Doe" && val.user == user && val.done == false);
+            }).length;
+
+
+            let taidioma = tasks.filter((val) => {
+                return (val.subject == "Idioma" && val.user == user && (new Date())-Date.parse(val.date) > 0 && val.done == false);
+            }).length;
+            let taquimica = tasks.filter((val) => {
+                return (val.subject == "Química" && val.user == user && (new Date())-Date.parse(val.date) > 0 && val.done == false);
+            }).length;
+            let taarte = tasks.filter((val) => {
+                return (val.subject == "Arte" && val.user == user && (new Date())-Date.parse(val.date) > 0 && val.done == false);
+            }).length;
+            let tamatematica = tasks.filter((val) => {
+                return (val.subject == "Matemática" && val.user == user && (new Date())-Date.parse(val.date) > 0 && val.done == false);
+            }).length;
+            let talengua = tasks.filter((val) => {
+                return (val.subject == "Lengua" && val.user == user && (new Date())-Date.parse(val.date) > 0 && val.done == false);
+            }).length;
+            let tahistoria = tasks.filter((val) => {
+                return (val.subject == "Historia" && val.user == user && (new Date())-Date.parse(val.date) > 0 && val.done == false);
+            }).length;
+            let tageografia = tasks.filter((val) => {
+                return (val.subject == "Geografía" && val.user == user && (new Date())-Date.parse(val.date) > 0 && val.done == false);
+            }).length;
+            let tafec = tasks.filter((val) => {
+                return (val.subject == "FEC" && val.user == user && (new Date())-Date.parse(val.date) > 0 && val.done == false);
+            }).length;
+            let taedfis = tasks.filter((val) => {
+                return (val.subject == "Educación Física" && val.user == user && (new Date())-Date.parse(val.date) > 0 && val.done == false);
+            }).length;
+            let tabio = tasks.filter((val) => {
+                return (val.subject == "Biología" && val.user == user && (new Date())-Date.parse(val.date) > 0 && val.done == false);
+            }).length;
+            let taaccion = tasks.filter((val) => {
+                return (val.subject == "Acción Solidaria" && val.user == user && (new Date())-Date.parse(val.date) > 0 && val.done == false);
+            }).length;
+            let tainformatica = tasks.filter((val) => {
+                return (val.subject == "Informática" && val.user == user && (new Date())-Date.parse(val.date) > 0 && val.done == false);
+            }).length;
+            let tadoe = tasks.filter((val) => {
+                return (val.subject == "DOE" && val.user == user && (new Date())-Date.parse(val.date) > 0 && val.done == false);
+            }).length;
+
+            
+            document.getElementsByTagName('tbody')[1].innerHTML = `
+                <tr>
+                    <th>Idioma</th>
+                    <td>${ttidioma}</td>
+                    <td>${thidioma}</td>
+                    <td>${tnhidioma}</td>
+                    <td>${taidioma}</td>
+                </tr>
+                <tr>
+                    <th>Química</th>
+                    <td>${ttquimica}</td>
+                    <td>${thquimica}</td>
+                    <td>${tnhquimica}</td>
+                    <td>${taquimica}</td>
+                </tr>
+                <tr>
+                    <th>Arte</th>
+                    <td>${ttarte}</td>
+                    <td>${tharte}</td>
+                    <td>${tnharte}</td>
+                    <td>${taarte}</td>
+                </tr>
+                <tr>
+                    <th>Matemática</th>
+                    <td>${ttmatematica}</td>
+                    <td>${thmatematica}</td>
+                    <td>${tnhmatematica}</td>
+                    <td>${tamatematica}</td>
+                </tr>
+                <tr>
+                    <th>Lengua</th>
+                    <td>${ttlengua}</td>
+                    <td>${thlengua}</td>
+                    <td>${tnhlengua}</td>
+                    <td>${talengua}</td>
+                </tr>
+                <tr>
+                    <th>Historia</th>
+                    <td>${tthistoria}</td>
+                    <td>${thhistoria}</td>
+                    <td>${tnhhistoria}</td>
+                    <td>${tahistoria}</td>
+                </tr>
+                <tr>
+                    <th>Geografía</th>
+                    <td>${ttgeografia}</td>
+                    <td>${thgeografia}</td>
+                    <td>${tnhgeografia}</td>
+                    <td>${tageografia}</td>
+                </tr>
+                <tr>
+                    <th>FEC</th>
+                    <td>${ttfec}</td>
+                    <td>${thfec}</td>
+                    <td>${tnhfec}</td>
+                    <td>${tafec}</td>
+                </tr>
+                <tr>
+                    <th>Educación Física</th>
+                    <td>${ttedfis}</td>
+                    <td>${thedfis}</td>
+                    <td>${tnhedfis}</td>
+                    <td>${taedfis}</td>
+                </tr>
+                <tr>
+                    <th>Biología</th>
+                    <td>${ttbio}</td>
+                    <td>${thbio}</td>
+                    <td>${tnhbio}</td>
+                    <td>${tabio}</td>
+                </tr>
+                <tr>
+                    <th>Acción Solidaria</th>
+                    <td>${ttaccion}</td>
+                    <td>${thaccion}</td>
+                    <td>${tnhaccion}</td>
+                    <td>${taaccion}</td>
+                </tr>
+                <tr>
+                    <th>Informática</th>
+                    <td>${ttinformatica}</td>
+                    <td>${thinformatica}</td>
+                    <td>${tnhinformatica}</td>
+                    <td>${tainformatica}</td>
+                </tr>
+                <tr>
+                    <th>DOE</th>
+                    <td>${ttdoe}</td>
+                    <td>${thdoe}</td>
+                    <td>${tnhdoe}</td>
+                    <td>${tadoe}</td>
+                </tr>
+            `;
+            }
+        
+        })
+            socket.on('tasks', (taskss) => {
+                console.log(tasks);
+            tasks = JSON.parse(taskss);
+            
+            for (i = 0; i < tasks.length; i++) {
+                if (tasks[i].user == user) {
+                document.getElementsByTagName('tbody')[0].innerHTML += `
+                    <tr>
+                        <td>${tasks[i].name}</td>
+                        <td>${tasks[i].description}</td>
+                        <td>${tasks[i].subject}</td>
+                        <td><input type="checkbox" onchange="changeDone(event, '${tasks[i]._id}')" ${(tasks[i].done) ? 'checked' : ''} /></td>
+                        <td><input type="checkbox" onchange="changeSended(event, '${tasks[i]._id}')" ${(tasks[i].sended) ? 'checked' : ''} /></td>
+                        <td>${tasks[i].date}</td>
+                        <td>${(tasks[i].done == false) ? ((Math.round((((Date.parse(tasks[i].date) - (new Date()))))) > 0) ? 'Faltan' : 'Atrasada') : ('')} ${(tasks[i].done == false) ? new Date(Math.abs((((Date.parse(tasks[i].date) - (new Date())))))).getDate()+" días" : ''}</td>
+                        <td><button class="btn btn-danger" onclick="deleteTask('${tasks[i]._id}')">&times;</td>
+                    </tr>
+                `;
+                if ((((Date.parse(tasks[i].date) - (new Date())))) <= 86400000 && !(tasks[i].sended)) {
+                    alert(`Falta un día o menos para la fecha de entrega de la tarea "${tasks[i].name}" de ${tasks[i].subject}, y aún no la haz entregado`)
+                }
+                }
+            }
+            // tt = tareas totales
+            console.log(year);
+            });
+        socket.on('reload', () => {
+            location.href = location.href;
+        });
+        function changeDone(e, id) {
+            let checked = e.target.checked;
+            socket.emit('updateDone', id, checked);
+        }
+        function changeSended(e, id) {
+            let checked = e.target.checked;
+            socket.emit('updateSended', id, checked);
+        }
+        function deleteTask(id) {
+            socket.emit('delete', id);
+        }
+
+    </script>
+</body>
+
+</html>

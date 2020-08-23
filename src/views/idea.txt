@@ -1,0 +1,2 @@
+hacer un login y registro, y que en el filter también comrpuebe
+si es del usuario
